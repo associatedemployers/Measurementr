@@ -1,0 +1,27 @@
+<div class="list-group-item activity-list-item">
+	<div class="row">
+		<div class="col-md-3">
+			{{activity}}
+		</div>
+		<div class="col-md-3">
+			{{minutes}} minutes / {{#if convertSteps}}{{computedSteps}}{{else}}{{steps}}{{/if}} steps
+		</div>
+		<div {{bind-attr class=note:col-md-2:col-md-3}}>
+			{{#if time_stamp}}
+				{{time-ago time_stamp}}
+			{{else}}
+				Now
+			{{/if}}
+		</div>
+		{{#if note}}
+			<div class="col-md-3">
+				{{read-more-less text=note}}
+			</div>
+		{{/if}}
+		{{#if record}}
+			<div {{bind-attr class=note:col-md-1:col-md-3}}>
+				<a href="#" class="text-danger" {{action "remove" record}}><span class="glyphicon glyphicon-remove remove-activity text-right"></span></a>
+			</div>
+		{{/if}}
+	</div>
+</div>

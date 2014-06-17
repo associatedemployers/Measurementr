@@ -1,0 +1,158 @@
+<div class="modal fade copy-paste-modal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Copy &amp; Paste Notes</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-6">
+						<h2>{{dayTotals.steps}} total steps</h2>
+					</div>
+					<div class="col-md-6">
+						<h2>{{dayTotals.minutes}} total minutes</h2>
+					</div>
+				</div>
+				<hr />
+				<p class="text-muted">Copy &amp; paste the following into your measurement notes.</p>
+				<hr />
+				{{{copyPasteData}}}
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default btn-block" data-dismiss="modal">Close</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div class="row">
+	<div class="col-md-2"></div>
+	<div class="col-md-6 text-center">
+		<h2>Step Measurement Converter</h2>
+		<hr />
+		{{#if status}}
+			<div class="alert alert-success">
+				{{status}}
+			</div>
+		{{/if}}
+		<div class="form-group">
+			<label>What activity did you do?</label>
+			{{view Ember.Select class="form-control" content=conversions optionLabelPath="content.l" optionValuePath="content" value=activity prompt="Select an activity"}}
+		</div>
+		{{#if activity}}
+			<label>How many minutes did you do this activity?</label>
+			<div class="input-group form-group">	
+				{{input type="number" class="form-control" value=minutes}}
+				<span class="input-group-addon">minutes</span>
+			</div>
+			{{#if minutes}}
+				<div class="form-group">
+					<label>Activity note</label>
+					{{textarea class="form-control restrict" value=note}}
+				</div>
+			{{/if}}
+		{{/if}}
+		<button class="btn btn-warning btn-lg btn-block" {{bind-attr disabled=formIsNotComplete}} {{action "createActivity"}}>Add Activity...</button>
+		{{#unless formIsNotComplete}}
+			<div class="preview-area">
+				{{activity-list-item activity=activity.l minutes=minutes convertSteps=activity.v note=note}}
+			</div>
+		{{/unless}}
+	</div>
+	<div class="col-md-4 activity-box">
+		<h2>
+			Today's Activities<br />
+			<small>
+				{{dayTotals.steps}} steps, {{dayTotals.miles}} miles, {{dayTotals.minutes}} minutes
+			</small>
+		</h2>
+		<div class="scroll-box">
+			{{#each record in todaysActivities}}
+				{{activity-list-item activity=record.activity minutes=record.minutes time_stamp=record.time_stamp steps=record.steps note=record.note record=record deleteAction='removeActivity'}}
+			{{else}}
+				<h4 class="text-muted">No activities yet.</h4>
+			{{/each}}
+		</div>
+		<hr />
+		<button class="btn btn-danger btn-block" {{action "showModal" ".copy-paste-modal"}}>Copy/Paste Data</button>
+		<hr />
+		<h2>
+			All Activities <strong><a href="#" class="text-danger" {{action "removeAll"}}>remove all</a></strong><br />
+			<small>
+				{{allTotals.steps}} steps, {{allTotals.miles}} miles, {{allTotals.minutes}} minutes
+			</small>
+		</h2>
+		<div class="scroll-box">
+			{{#each record in content}}
+				{{activity-list-item activity=record.activity minutes=record.minutes time_stamp=record.time_stamp steps=record.steps note=record.note record=record deleteAction='removeActivity'}}
+			{{else}}
+				<h4 class="text-muted">No activities yet.</h4>
+			{{/each}}
+		</div>
+		<hr />
+		<h2>
+			Personal Goals
+		</h2>
+		<div>
+			{{#each goal in goals itemController="goal"}}
+				<div class="row">
+					<div class="col-md-3">
+						<strong>{{goal.name}}</strong><br />
+						<span class="text-muted">{{goal.value}} {{goal.type}}s</span>
+					</div>
+					<div class="col-md-6">
+						{{percent-bar value=goal.percent}}
+					</div>
+					<div class="col-md-2">
+						<a href="#" {{action "toggleStats"}}>{{#if showingStats}}Hide{{else}}Show{{/if}} Stats</a>
+					</div>
+					<div class="col-md-1">
+						<a href="#" class="text-danger" {{action "removeGoal" goal}}><span class="glyphicon glyphicon-remove remove-activity text-right"></span></a>
+					</div>
+					{{#if showingStats}}
+						<div class="col-md-12">
+							<hr />
+							<p class="text-success text-center"><strong>Exercise like you did today and your goal will take {{daysToComplete}} to complete.</strong></p>
+							<div class="row text-center">
+								<div class="col-md-6">
+									{{relevantAllTotal}} / {{goal.value}} {{goal.type}}s<br />
+									<span class="text-muted">Completed / Goal</span>
+								</div>
+								<div class="col-md-6">
+									{{valueLeft}}<br />
+									<span class="text-muted">{{capitalize-first goal.type}}s to Complete</span>
+								</div>
+							</div>
+						</div>
+					{{/if}}
+				</div>
+			{{else}}
+				<h4 class="text-muted">No goals yet.</h4>
+			{{/each}}
+			{{#if addingGoal}}
+				<div class="form-group">
+					<label>What's the name of your goal?</label>
+					{{input class="form-control" value=goalName placeholder="Goal Name"}}
+				</div>
+				{{#if goalName}}
+					<div class="form-group">
+						<label>What kind of goal is this?</label>
+						{{view Ember.Select class="form-control" content=goalTypes value=goalType prompt="Select a Goal Type"}}
+					</div>
+					{{#if goalType}}
+						<div class="form-group">
+							<label>How many {{goalType}}s are you shooting for?</label>
+							{{input type="number" class="form-control" value=goalValue placeholder="Goal"}}
+						</div>
+						{{#if goalFormIsComplete}}
+							<button class="btn btn-warning btn-block" {{action "createGoal"}}>Add Goal</button>
+						{{/if}}
+					{{/if}}
+				{{/if}}
+			{{/if}}
+			<hr />
+			<button class="btn btn-primary btn-block" {{action "toggleProperty" "addingGoal"}}>{{#if addingGoal}}Hide{{else}}Add Goal...{{/if}}</button>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,5 @@
+<div class="progress progress-striped">
+	<div {{bind-attr class=":progress-bar complete:progress-bar-success:progress-bar-primary"}} role="progressbar" {{bind-attr aria-valuenow=value}} aria-valuemin="0" aria-valuemax="100" {{bind-attr style=styleCalc}}>
+		<span>{{value}}%{{#if complete}} - Complete!{{/if}}</span>
+	</div>
+</div>

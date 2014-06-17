@@ -1,0 +1,9 @@
+{{#if expanded}}
+	{{text}} <a href="#" {{action toggleProperty "expanded"}}>Less...</a>
+{{else}}
+	{{#if isLong}}
+		{{shorten-to text 15}} <a href="#" {{action toggleProperty "expanded"}}>More...</a>
+	{{else}}
+		{{text}}
+	{{/if}}
+{{/if}}
