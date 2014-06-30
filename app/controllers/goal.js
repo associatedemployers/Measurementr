@@ -22,7 +22,7 @@ var GoalController = Ember.ObjectController.extend({
 	}.property('relevantAllTotal', 'type', 'value'),
 
 	daysToComplete: function () {
-		return (this.get('relevantDayTotal') > 0) ? "around " + Math.ceil(this.get('value') / this.get('relevantDayTotal')) + " days" : "forever";
+		return (this.get('relevantDayTotal') > 0) ? "around " + Math.ceil(this.get('valueLeft') / this.get('relevantDayTotal')) + " days" : "forever";
 	}.property('relevantDayTotal', 'value'),
 	
 	valueLeft: function () {
